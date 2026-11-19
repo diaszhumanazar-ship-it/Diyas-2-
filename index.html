@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дән — қолмен қуырылған кофе</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&display=swap&subset=cyrillic-ext" rel="stylesheet">
+<style>
+:root{--bg:#EEF0E6;--ink:#1F2A24;--cherry:#B3263E;--muted:#5B665F;--line:#CBD0C2;--roast-bg:#F2D9A8;--roast-ink:#1F2A24}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:Onest,system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--cherry);outline-offset:2px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,5vw,56px);position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:1.5rem;letter-spacing:-.02em;text-decoration:none}
+.logo span{color:var(--cherry)}
+nav{display:flex;gap:20px;align-items:center}
+nav a{text-decoration:none;font-weight:500}
+.cartbtn{border:2px solid var(--ink);background:none;border-radius:999px;padding:8px 16px;font:inherit;font-weight:700;cursor:pointer}
+.cartbtn b{background:var(--cherry);color:#fff;border-radius:999px;padding:1px 8px;margin-left:6px;font-size:.85rem}
+.hero{background:var(--roast-bg);color:var(--roast-ink);transition:background .3s,color .3s;padding:clamp(32px,7vw,84px) clamp(16px,5vw,56px);display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+.hero h1{font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.03em;font-weight:800;max-width:12ch}
+.hero p{max-width:46ch;margin-top:16px;font-size:1.1rem}
+.slider{margin-top:32px;max-width:480px}
+.slider label{font-weight:700;display:block;margin-bottom:10px}
+.slider .ends{display:flex;justify-content:space-between;font-size:.9rem;margin-top:6px;opacity:.8}
+input[type=range]{width:100%;accent-color:var(--cherry);height:32px}
+.notes{margin-top:18px;padding:14px 16px;border:2px solid currentColor;border-radius:12px;max-width:480px}
+.notes strong{display:block;font-size:1.1rem}
+.beanwrap{display:grid;place-items:center}
+.beanwrap svg{width:min(100%,380px);height:auto;transition:transform .3s}
+section{padding:clamp(40px,6vw,80px) clamp(16px,5vw,56px)}
+h2{font-size:clamp(1.6rem,3.5vw,2.4rem);letter-spacing:-.02em;font-weight:800}
+.sub{color:var(--muted);margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;margin-top:28px}
+.card{background:#fff;border:2px solid var(--line);border-radius:6px 28px 6px 28px;padding:20px;display:flex;flex-direction:column;gap:8px;transition:border-color .2s,transform .2s}
+.card.match{border-color:var(--cherry);transform:translateY(-4px)}
+.card .dot{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink)}
+.card h3{font-size:1.15rem}
+.card small{color:var(--muted)}
+.card .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px}
+.price{font-weight:800;font-size:1.15rem}
+.add{background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer}
+.add:active{transform:scale(.96)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;background:var(--ink);color:var(--bg)}
+.facts h3{margin-bottom:6px}
+.facts p{opacity:.8}
+footer{padding:28px clamp(16px,5vw,56px);color:var(--muted);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(420px,100%);background:#fff;z-index:10;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column;padding:20px;box-shadow:-8px 0 32px rgba(0,0,0,.18)}
+.drawer.open{transform:none}
+.drawer h2{font-size:1.4rem;display:flex;justify-content:space-between}
+.drawer h2 button{border:0;background:none;font-size:1.6rem;cursor:pointer}
+.items{flex:1;overflow:auto;margin:16px 0}
+.item{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.qty{display:flex;align-items:center;gap:8px;margin-top:4px}
+.qty button{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ink);background:none;cursor:pointer;font-weight:700}
+.empty{color:var(--muted);padding:24px 0}
+.drawer input{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;font:inherit;margin-bottom:10px}
+.order{display:block;text-align:center;background:var(--cherry);color:#fff;text-decoration:none;font-weight:800;padding:14px;border-radius:12px}
+.order[aria-disabled=true]{opacity:.4;pointer-events:none}
+.total{display:flex;justify-content:space-between;font-weight:800;font-size:1.2rem;margin-bottom:12px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.beanwrap{order:-1}nav a{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#top">Дән<span>.</span></a>
+  <nav><a href="#shop">Кофе</a><a href="#info">Жеткізу</a>
+    <button class="cartbtn" id="openCart" aria-label="Себетті ашу">Себет<b id="count">0</b></button>
+  </nav>
+</header>
+
+<main id="top">
+<div class="hero" id="hero">
+  <div>
+    <h1>Қуырылымды өзің таңда</h1>
+    <p>Қолмен қуырылған кофе дәні. Қуырылым дәрежесін жылжытып, дәмін көр — сосын өзіңе лайық кофені ал.</p>
+    <div class="slider">
+      <label for="roast">Қуырылым дәрежесі</label>
+      <input type="range" id="roast" min="0" max="100" value="40">
+      <div class="ends"><span>Жеңіл</span><span>Қою</span></div>
+    </div>
+    <div class="notes" aria-live="polite"><strong id="nTitle"></strong><span id="nText"></span></div>
+  </div>
+  <div class="beanwrap">
+    <svg viewBox="0 0 200 200" role="img" aria-label="Кофе дәні">
+      <g transform="rotate(-25 100 100)">
+        <ellipse id="bean" cx="100" cy="100" rx="62" ry="84" fill="#C98A4B"/>
+        <path id="crease" d="M100 22 C 70 70, 130 130, 100 178" fill="none" stroke="#F2D9A8" stroke-width="7" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<section id="shop">
+  <h2>Кофе дәндері</h2>
+  <p class="sub">Әр қапта 250 г. Қуырылымы сіз таңдағанға жақын кофелер белгіленеді.</p>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="facts" id="info">
+  <div><h3>Жаңа қуырылған</h3><p>Тапсырыс алған күні қуырып, 24 сағат ішінде жібереміз.</p></div>
+  <div><h3>Қала бойынша жеткізу</h3><p>Алматы мен Астанада 1–2 күнде. 10 000 ₸-дан жоғары тапсырыс тегін.</p></div>
+  <div><h3>Ұнамаса, қайтарамыз</h3><p>Дәмі ұнамаса, ашылған қапты да ақшасын қайтарып аламыз.</p></div>
+</section>
+</main>
+
+<footer><span>© 2026 Дән кофе қуыратын орны</span><span>WhatsApp: +7 700 000 00 00</span></footer>
+
+<aside class="drawer" id="drawer" aria-label="Себет">
+  <h2>Себет <button id="closeCart" aria-label="Жабу">×</button></h2>
+  <div class="items" id="items"></div>
+  <div class="total"><span>Барлығы</span><span id="total">0 ₸</span></div>
+  <input id="name" placeholder="Атыңыз" autocomplete="name">
+  <input id="addr" placeholder="Жеткізу мекенжайы" autocomplete="street-address">
+  <a class="order" id="order" href="#" aria-disabled="true" target="_blank" rel="noopener">WhatsApp арқылы тапсырыс беру</a>
+</aside>
+
+<script>
+const WA="77000000000"; // өз нөміріңізді осында жазыңыз
+const products=[
+ {id:1,name:"Эфиопия Йиргачефф",roast:15,price:6900,tags:"жасмин, бергамот, шәй"},
+ {id:2,name:"Колумбия Уила",roast:40,price:5800,tags:"қызыл алма, карамель"},
+ {id:3,name:"Бразилия Серрадо",roast:62,price:5200,tags:"жаңғақ, сүтті шоколад"},
+ {id:4,name:"Эспрессо қоспасы «Дән №1»",roast:88,price:4900,tags:"қара шоколад, қақталған қант"}
+];
+const cart={};
+const fmt=n=>n.toLocaleString("ru-RU")+" ₸";
+const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+const rgb=a=>`rgb(${a.join(",")})`;
+const lightBean=[201,138,75],darkBean=[43,26,18],lightBg=[242,217,168],darkBg=[58,36,24];
+
+function beanColor(v){return rgb(mix(lightBean,darkBean,v/100))}
+
+const grid=document.getElementById("grid");
+grid.innerHTML=products.map(p=>`<div class="card" data-roast="${p.roast}">
+ <div class="dot" style="background:${beanColor(p.roast)}"></div>
+ <h3>${p.name}</h3><small>${p.tags}</small><small>250 г</small>
+ <div class="row"><span class="price">${fmt(p.price)}</span>
+ <button class="add" data-id="${p.id}">Қосу</button></div></div>`).join("");
+
+const slider=document.getElementById("roast");
+function update(){
+  const v=+slider.value,t=v/100,hero=document.getElementById("hero");
+  hero.style.setProperty("--roast-bg",rgb(mix(lightBg,darkBg,t)));
+  hero.style.setProperty("--roast-ink",t>.5?"#F2E8D8":"#1F2A24");
+  document.getElementById("bean").setAttribute("fill",beanColor(v));
+  document.getElementById("crease").setAttribute("stroke",rgb(mix(lightBg,darkBg,t*.6)));
+  let title,text;
+  if(v<34){title="Жеңіл қуырылым";text="Цитрус, жасмин, шәй. Сүзгі әдісіне (V60, чемекс) ыңғайлы.";}
+  else if(v<67){title="Орташа қуырылым";text="Қызыл алма, карамель, жаңғақ. Күнделікті ішуге және кофе-машинаға лайық.";}
+  else{title="Қою қуырылым";text="Қара шоколад, қақталған қант. Эспрессо мен сүтті кофеге жақсы.";}
+  document.getElementById("nTitle").textContent=title;
+  document.getElementById("nText").textContent=text;
+  document.querySelectorAll(".card").forEach(c=>c.classList.toggle("match",Math.abs(+c.dataset.roast-v)<=22));
+}
+slider.addEventListener("input",update);update();
+
+const drawer=document.getElementById("drawer");
+document.getElementById("openCart").onclick=()=>drawer.classList.add("open");
+document.getElementById("closeCart").onclick=()=>drawer.classList.remove("open");
+document.addEventListener("keydown",e=>{if(e.key==="Escape")drawer.classList.remove("open")});
+grid.addEventListener("click",e=>{
+  const id=e.target.dataset.id;if(!id)return;
+  cart[id]=(cart[id]||0)+1;render();
+  const b=e.target;b.textContent="Қосылды";setTimeout(()=>b.textContent="Қосу",900);
+});
+document.getElementById("items").addEventListener("click",e=>{
+  const id=e.target.dataset.id,d=+e.target.dataset.d;if(!id||!d)return;
+  cart[id]+=d;if(cart[id]<=0)delete cart[id];render();
+});
+["name","addr"].forEach(i=>document.getElementById(i).addEventListener("input",render));
+
+function render(){
+  const lines=products.filter(p=>cart[p.id]);
+  const total=lines.reduce((s,p)=>s+p.price*cart[p.id],0);
+  const count=lines.reduce((s,p)=>s+cart[p.id],0);
+  document.getElementById("count").textContent=count;
+  document.getElementById("total").textContent=fmt(total);
+  document.getElementById("items").innerHTML=lines.length?lines.map(p=>`<div class="item"><div><strong>${p.name}</strong>
+   <div class="qty"><button data-id="${p.id}" data-d="-1" aria-label="Азайту">−</button>${cart[p.id]}<button data-id="${p.id}" data-d="1" aria-label="Көбейту">+</button></div></div>
+   <strong>${fmt(p.price*cart[p.id])}</strong></div>`).join(""):'<p class="empty">Себет бос. Тізімнен кофе таңдаңыз.</p>';
+  const name=document.getElementById("name").value.trim(),addr=document.getElementById("addr").value.trim();
+  const a=document.getElementById("order");
+  const ok=lines.length&&name&&addr;
+  a.setAttribute("aria-disabled",ok?"false":"true");
+  const msg=`Сәлем! Тапсырыс:\n${lines.map(p=>`• ${p.name} × ${cart[p.id]}`).join("\n")}\nБарлығы: ${fmt(total)}\nАты: ${name}\nМекенжай: ${addr}`;
+  a.href=ok?`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`:"#";
+}
+render();
+</script>
+</body>
+</html>
